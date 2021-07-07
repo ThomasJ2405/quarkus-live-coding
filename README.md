@@ -21,3 +21,25 @@ There will be no slides! We'll do live coding and cover these topics and more:
 9. [https://github.com/quarkusio/quarkus-quickstarts](https://github.com/quarkusio/quarkus-quickstarts)
 
 ## live coding
+### Prerequsites
+1. Goto to [https://code.quarkus.io/](https://code.quarkus.io/)
+2. Change group to `com.twodigits` and artifact to `quarkus-live-coding`
+3. Choose dependencies 
+- RESTEasy JAX-RS
+- RESTEasy JSON-B
+- Hibernate ORM with Panache
+- JDBC Driver - PostgreSQL
+- JDBC Driver - H2
+- SmallRye OpenAPI
+- SmallRye Fault Tolerance
+- SmallRye Health
+- SmallRye Metrics
+4. Download the package
+5. Unzip to your directory
+6. StartUp your IDE
+
+### Build a REST app with Quarkus
+
+### Adding MicroProfile Metrics
+
+### Database access with Hibernate Panache
