@@ -36,10 +36,86 @@ There will be no slides! We'll do live coding and cover these topics and more:
 - SmallRye Metrics
 4. Download the package
 5. Unzip to your directory
-6. StartUp your IDE
+6. StartUp your IDE, e.g. `code .`
 
 ### Build a REST app with Quarkus
+- investigate the pom.xml and the directory structure
+- run `mvn compile quarkus:dev`
+- open [http://localhost:8080/hello](http://localhost:8080/hello)
+#### Live Reload
+- change message in GreetingResource
+- reload browser and see new message
+#### MicroProfile Config
+- add property to application.properties `greeting.message=Hello from 2D LiveCoding`
+- add variable to GreetingResource
+```Java
+    @ConfigProperty(name = "greeting.message")
+    String message;
+```
+- return message in method hello()
+- reload browser
+#### Testing Console
+- run tests in dev console with `r`
+- test is failing, open GreetingResourceTest and adjust expected message to `Hello from 2D LiveCoding`
+- test now runs ok
+- inspect testing at dev console
+#### Dev Web Console
+- open [http://localhost:8080/q/dev](http://localhost:8080/q/dev)
+- goto Config Editor
+- search for greeting.message
+- change to `Hello from 2D LiveCoding with Quarkus Dev Console!`
+- open lower pane to see failing test
+- change GreetingResourceTest, expected result to `Hello from 2D LiveCoding with Quarkus Dev Console!`
+#### Open API / Swagger
+- explore SwaggerUI
+- open new Terminal gitbash
+- execute `curl http://localhost:8080/q/openapi`
+- examine the output
+
+### Database access with Hibernate Panache
+- Tutorial taken from [https://redhat-developer-demos.github.io/quarkus-tutorial/quarkus-tutorial/panache.html](https://redhat-developer-demos.github.io/quarkus-tutorial/quarkus-tutorial/panache.html)
+- create new class `Fruit.java`
+- extends `PanacheEntity`
+- implementation:
+```Java
+@Entity
+public class Fruit extends PanacheEntity {
+
+    @Column(length = 40, unique = true)
+    public String name;
+}
+```
+- create new class `FruitResource.java`
+```Java
+@Path("fruits")
+public class FruitResource {
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Fruit> get() {
+        return Fruit.listAll();
+    }
+
+    @Transactional
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response create(Fruit fruit) {
+        fruit.id = null;
+        fruit.persist();
+        return Response.status(Response.Status.CREATED).entity(fruit).build();
+    }
+}
+```
+- add H2 Database config to application.properties
+```
+quarkus.datasource.db-kind=h2
+quarkus.datasource.jdbc.url=jdbc:h2:mem:myDB
+quarkus.hibernate-orm.database.generation=drop-and-create
+quarkus.hibernate-orm.log.sql=true
+```
+
+- hit endpoint with Developer GUI / Swagger UI from [http://localhost:8080/q/swagger-ui/](http://localhost:8080/q/swagger-ui/)
 
 ### Adding MicroProfile Metrics
 
-### Database access with Hibernate Panache
