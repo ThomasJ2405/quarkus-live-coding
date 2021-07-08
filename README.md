@@ -114,8 +114,54 @@ quarkus.datasource.jdbc.url=jdbc:h2:mem:myDB
 quarkus.hibernate-orm.database.generation=drop-and-create
 quarkus.hibernate-orm.log.sql=true
 ```
-
 - hit endpoint with Developer GUI / Swagger UI from [http://localhost:8080/q/swagger-ui/](http://localhost:8080/q/swagger-ui/)
 
 ### Adding MicroProfile Metrics
-
+- Open Website [https://microprofile.io/](https://microprofile.io/)
+- navigate to [https://github.com/eclipse/microprofile-metrics/releases/tag/3.0](https://github.com/eclipse/microprofile-metrics/releases/tag/3.0)
+- navigate to SPEC html [https://download.eclipse.org/microprofile/microprofile-metrics-3.0/microprofile-metrics-spec-3.0.html](https://download.eclipse.org/microprofile/microprofile-metrics-3.0/microprofile-metrics-spec-3.0.html)
+- navigate to Annotations [https://download.eclipse.org/microprofile/microprofile-metrics-3.0/microprofile-metrics-spec-3.0.html#api-annotations](https://download.eclipse.org/microprofile/microprofile-metrics-3.0/microprofile-metrics-spec-3.0.html#api-annotations)
+- go through the different types of metrics
+- open default metrics [http://localhost:8080/q/metrics](http://localhost:8080/q/metrics)
+- get metrics with curl in bash
+```bash
+curl -H"Accept: application/json" localhost:8080/q/metrics
+```
+- no custom metric available
+- Go to IDE, open `FruitRessource.java`
+- Annotate get Method with `@Counted` and `@Timed`
+```Java
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Counted(
+        name = "fruits.get.counter", 
+        description = "How many calls for get have been registered.")
+    @Timed(
+        name = "fruits.get.timer",
+        description = "How long did the invocations of get take time.",
+        unit = MetricUnits.MILLISECONDS)
+    public List<Fruit> get() {
+        return Fruit.listAll();
+    }
+```
+- do some calls to get [http://localhost:8080/fruits](http://localhost:8080/fruits)
+- get application metrics with curl in bash
+```bash
+curl -H"Accept: application/json" localhost:8080/q/metrics/application
+```
+- Explanation of metrics [https://quarkus.io/guides/smallrye-metrics#review-the-generated-metrics](https://quarkus.io/guides/smallrye-metrics#review-the-generated-metrics)
+- Annotate POST Method
+```Java
+    @Counted(
+        name = "fruit.create.counter", 
+        description = "How many fruits  have been created.")
+    @Timed(
+        name = "fruit.create.timer",
+        description = "How long did the invocations of create take time.",
+        unit = MetricUnits.MILLISECONDS)
+```
+do some calls to create [http://localhost:8080/q/swagger-ui/](http://localhost:8080/q/swagger-ui/)
+- get application metrics with curl in bash
+```bash
+curl -H"Accept: application/json" localhost:8080/q/metrics/application
+```
